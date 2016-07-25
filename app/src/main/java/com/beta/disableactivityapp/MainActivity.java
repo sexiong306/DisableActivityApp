@@ -27,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
         userApp = $(R.id.userapplist);
         getAppInfo(getApplicationContext());
 
-        sysApp.setAdapter(new ListViewAdapter(this,sysAppList));
-        userApp.setAdapter(new ListViewAdapter(this,userAppList));
+        sysApp.setAdapter(new PkgListViewAdapter(this,sysAppList));
+        userApp.setAdapter(new PkgListViewAdapter(this,userAppList));
 
     }
 

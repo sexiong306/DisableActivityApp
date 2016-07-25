@@ -1,15 +1,13 @@
 package com.beta.disableactivityapp;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * author：pudgeli on 16/7/25
@@ -17,9 +15,9 @@ import java.util.ArrayList;
  */
 public class  ListViewAdapter<T> extends BaseAdapter{
     Context mContext;
-    ArrayList<T> content;
+    List<T> content;
 
-    public ListViewAdapter(Context context,ArrayList<T> content) {
+    public ListViewAdapter(Context context,List<T> content) {
         super();
         this.content = content;
         this.mContext = context;
@@ -93,24 +91,10 @@ public class  ListViewAdapter<T> extends BaseAdapter{
         }else{
             vh = (ViewHolder) convertView.getTag();
         }
-        if (content.get(position) instanceof PackageInfo) {
-            PackageInfo packageInfo = (PackageInfo)content.get(position);
-            vh.mTextView.setText(packageInfo.packageName);
-            final String name = packageInfo.packageName;
-            vh.mTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent();
-                    i.setClass(mContext,PkgActivity.class);
-                    i.pute;
-                    mContext.startActivity(i);
-                }
-            });
-        }
         return convertView;
     }
 
-    final class ViewHolder{
+    class ViewHolder{
         TextView mTextView;
     }
 }
