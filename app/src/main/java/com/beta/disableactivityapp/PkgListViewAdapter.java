@@ -12,7 +12,7 @@ import java.util.List;
  * author：pudgeli on 16/7/25
  * email：pudgeli@tencent.com
  */
-public class PkgListViewAdapter extends ListViewAdapter{
+public class PkgListViewAdapter extends ListViewAdapter<PackageInfo>{
     public PkgListViewAdapter(Context context, List content) {
         super(context, content);
     }
@@ -39,7 +39,7 @@ public class PkgListViewAdapter extends ListViewAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
         convertView = super.getView(position, convertView, parent);
         ViewHolder vh = (ViewHolder) convertView.getTag();
-        PackageInfo packageInfo = (PackageInfo)content.get(position);
+        PackageInfo packageInfo = content.get(position);
         vh.mTextView.setText(packageInfo.packageName);
         final String name = packageInfo.packageName;
         vh.mTextView.setOnClickListener(new View.OnClickListener() {

@@ -5,10 +5,14 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Binder;
+import android.os.Process;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -16,7 +20,7 @@ import java.util.List;
  * author：pudgeli on 16/7/25
  * email：pudgeli@tencent.com
  */
-public class ActivityListAdapter extends ListViewAdapter{
+public class ActivityListAdapter extends ListViewAdapter<ActivityInfo>{
     String pkgName;
     public ActivityListAdapter(Context context, List content,String pkgName) {
         super(context, content);
@@ -45,23 +49,17 @@ public class ActivityListAdapter extends ListViewAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
         convertView = super.getView(position, convertView, parent);
         ViewHolder vh = (ViewHolder) convertView.getTag();
-        ActivityInfo activityInfo = (ActivityInfo) content.get(position);
+        ActivityInfo activityInfo = content.get(position);
         vh.mTextView.setText(activityInfo.name);
         final String activityName = activityInfo.name;
         vh.mTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Runtime.getRuntime().exec("su");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                final int uid = Binder.getCallingUid();
                 final int permission = mContext.checkCallingPermission(
                         android.Manifest.permission.CHANGE_COMPONENT_ENABLED_STATE);
                 final boolean allowedByPermission = (permission == PackageManager.PERMISSION_GRANTED);
                 if (!allowedByPermission){
-                    Log.e("","granted error");
+                    Toast.makeText(mContext,"granted failed",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 ComponentName componentName = new ComponentName(pkgName,activityName);
@@ -70,8 +68,10 @@ public class ActivityListAdapter extends ListViewAdapter{
                 if (status == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT
                         || status == PackageManager.COMPONENT_ENABLED_STATE_ENABLED){
                     packageManager.setComponentEnabledSetting(componentName,PackageManager.COMPONENT_ENABLED_STATE_DISABLED,PackageManager.DONT_KILL_APP);
+                    Toast.makeText(mContext,"disable",Toast.LENGTH_SHORT).show();
                 }else{
                     packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,PackageManager.DONT_KILL_APP);
+                    Toast.makeText(mContext,"enable",Toast.LENGTH_SHORT).show();
                 }
 
             }
