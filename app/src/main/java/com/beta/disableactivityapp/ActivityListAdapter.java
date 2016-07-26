@@ -4,16 +4,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.os.Binder;
-import android.os.Process;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -55,27 +51,48 @@ public class ActivityListAdapter extends ListViewAdapter<ActivityInfo>{
         vh.mTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int permission = mContext.checkCallingPermission(
-                        android.Manifest.permission.CHANGE_COMPONENT_ENABLED_STATE);
-                final boolean allowedByPermission = (permission == PackageManager.PERMISSION_GRANTED);
-                if (!allowedByPermission){
-                    Toast.makeText(mContext,"granted failed",Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 ComponentName componentName = new ComponentName(pkgName,activityName);
                 PackageManager packageManager = mContext.getPackageManager();
                 int status = packageManager.getComponentEnabledSetting(componentName);
                 if (status == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT
                         || status == PackageManager.COMPONENT_ENABLED_STATE_ENABLED){
-                    packageManager.setComponentEnabledSetting(componentName,PackageManager.COMPONENT_ENABLED_STATE_DISABLED,PackageManager.DONT_KILL_APP);
-                    Toast.makeText(mContext,"disable",Toast.LENGTH_SHORT).show();
+//                    packageManager.setComponentEnabledSetting(componentName,PackageManager.COMPONENT_ENABLED_STATE_DISABLED,PackageManager.DONT_KILL_APP);
+                    try {
+                        execCmd("pm disable com.qq.bugly.beta.demo/com.tencent.bugly.beta.ui.BetaActivity");
+                        Toast.makeText(mContext,"disable",Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }else{
-                    packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,PackageManager.DONT_KILL_APP);
-                    Toast.makeText(mContext,"enable",Toast.LENGTH_SHORT).show();
+//                    packageManager.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,PackageManager.DONT_KILL_APP);
+                    try {
+                        execCmd("pm enable com.qq.bugly.beta.demo/com.tencent.bugly.beta.ui.BetaActivity");
+                        Toast.makeText(mContext,"enable",Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
         });
         return convertView;
+    }
+
+
+    void execCmd(String cmd){
+        try{
+            Process process = Runtime.getRuntime().exec("su");
+            OutputStream os = process.getOutputStream();
+            DataOutputStream dos = new DataOutputStream(os);
+            dos.writeBytes(cmd);
+            dos.flush();
+            dos.close();
+            os.close();
+        }
+        catch(Throwable t)
+        {
+            t.printStackTrace();
+        }
+
     }
 }

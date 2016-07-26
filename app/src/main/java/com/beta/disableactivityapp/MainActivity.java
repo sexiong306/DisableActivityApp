@@ -46,10 +46,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         PackageManager packageManager = context.getPackageManager();
-
+        if (packageManager == null){
+            return;
+        }
         List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+        if (packageInfos == null){
+            return;
+        }
         for (PackageInfo packageInfo : packageInfos){
-            if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) > 0){
+            if (packageInfo.applicationInfo != null && (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) > 0){
                 sysAppList.add(packageInfo);
             }else{
                 userAppList.add(packageInfo);

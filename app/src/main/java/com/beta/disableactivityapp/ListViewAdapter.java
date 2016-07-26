@@ -88,8 +88,6 @@ public class  ListViewAdapter<T> extends BaseAdapter{
             convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item,null);
             vh.mTextView = (TextView) convertView.findViewById(R.id.list_text);
             convertView.setTag(vh);
-        }else{
-            vh = (ViewHolder) convertView.getTag();
         }
         return convertView;
     }
